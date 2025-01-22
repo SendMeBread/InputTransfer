@@ -8,6 +8,6 @@
 ```
 pip install pyautogui twisted
 ```
-The other packages: subprocess, multiprocessing, os, keyboard, and time, _should_ come with your Python 3
+The other packages: subprocess, multiprocessing, os, keyboard, sys and time, _should_ come with your Python 3
 ---
 # WIP
