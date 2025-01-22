@@ -7,7 +7,7 @@ class MulticastInputs(DatagramProtocol):
         self.transport.setTTL(5)
         self.transport.joinGroup(sys.argv[1])
     def datagramReceived(self, datagram, address):
-        if b".00" in datagram:
+        if b".01" in datagram:
             Y = datagram.decode('utf-8')
             pyautogui.moveTo(None, Y)
 reactor.listenMulticast(int(sys.argv[2]), MulticastInputs(), listenMultiple=True)
