@@ -10,6 +10,6 @@ class MulticastInputs(DatagramProtocol):
     def datagramReceived(self, datagram, address):
         if b".00" in datagram:
             X = datagram.decode('utf-8')
-            mouse.move(int(X), None)
+            mouse.move(float(X), None)
 reactor.listenMulticast(int(sys.argv[2]), MulticastInputs(), listenMultiple=True)
 reactor.run()
