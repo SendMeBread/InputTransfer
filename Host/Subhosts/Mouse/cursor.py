@@ -10,6 +10,6 @@ class MulticastInputs(DatagramProtocol):
     def datagramReceived(self, datagram, address):
         if b"," in datagram:
             x, y = tuple(datagram.decode('utf-8').split(","))
-            mouse.move(x, y)
+            mouse.position = ((int(x), int(y)))
 reactor.listenMulticast(int(sys.argv[2]), MulticastInputs(), listenMultiple=True)
 reactor.run()
