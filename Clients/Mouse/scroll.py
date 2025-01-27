@@ -9,7 +9,7 @@ class MulticastInputs(DatagramProtocol):
         self.transport.setTTL(5)
         self.transport.joinGroup(sys.argv[1])
         while True:
-            if self.y_scroll is not 0:
+            if self.y_scroll != 0:
                 self.transport.write(bytes(str(self.y_scroll), encoding="utf-8"), (sys.argv[1], int(sys.argv[2])))
                 self.y_scroll = 0
     def datagramReceived(self, datagram, address):
