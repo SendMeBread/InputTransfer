@@ -5,9 +5,11 @@
 **PyAutoGUI _(By Al Sweigart)_ [PyPi](https://pypi.org/project/PyAutoGUI/)**
 
 **Twisted _(By the Twisted Team)_ [PyPi](https://pypi.org/project/Twisted/)**
+
+**Pynput _(By moses.palmer)_ [PyPi](https://pypi.org/project/pynput/)**
 ```
-pip install pyautogui twisted
+pip install pyautogui twisted pynput
 ```
-The other packages: subprocess, multiprocessing, os, keyboard, sys and time, _should_ come with your Python 3
+The other packages: subprocess, multiprocessing, os, sys time, and keyboard,  _should_ come with your Python 3
 ---
 # WIP
