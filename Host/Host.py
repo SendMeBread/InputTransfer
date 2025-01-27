@@ -30,8 +30,7 @@ def run_script(name):
         for file in files:
             if name in file:
                 filepath = os.path.join(root, file)
-                subprocess.run(["python3", filepath, address, port]) #If on windows, change 'python3' to 'python' #If on windows, change 'python3' to 'python'
-
+                subprocess.run(["python3", filepath, address, port])
 inputList = []
 with mouse.Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as mListener:
     mListener.join()

@@ -1,7 +1,8 @@
 import sys
-import pyautogui
+from pynput.mouse import Controller
 from twisted.internet import reactor
 from twisted.internet.protocol import DatagramProtocol
+mouse = Controller()
 class MulticastInputs(DatagramProtocol):
     def startProtocol(self):
         self.transport.setTTL(5)
@@ -9,6 +10,6 @@ class MulticastInputs(DatagramProtocol):
     def datagramReceived(self, datagram, address):
         if b".01" in datagram:
             Y = datagram.decode('utf-8')
-            pyautogui.moveTo(None, Y)
+            mouse.move(None, int(Y))
 reactor.listenMulticast(int(sys.argv[2]), MulticastInputs(), listenMultiple=True)
 reactor.run()
