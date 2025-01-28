@@ -8,7 +8,9 @@ class MulticastInputs(DatagramProtocol):
         self.transport.setTTL(5)
         self.transport.joinGroup(sys.argv[1])
     def datagramReceived(self, datagram, address):
-        if (int(datagram.decode('utf-8')) >= 1 or int(datagram.decode('utf-8') <= -1)) and not b".0" in datagram:
-            mouse.scroll(None, int(datagram.decode('utf-8')))
+        print()
+        if b" scrolled" in datagram:
+            scrollVal = datagram.decode('utf-8')[0:-10]
+            mouse.scroll(None, int(scrollVal))
 reactor.listenMulticast(int(sys.argv[2]), MulticastInputs(), listenMultiple=True)
 reactor.run()
