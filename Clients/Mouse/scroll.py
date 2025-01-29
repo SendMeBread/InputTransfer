@@ -11,6 +11,7 @@ class MulticastInputs(DatagramProtocol):
         self.transport.write(bytes(str(self.y_scroll)+" scrolled", encoding="utf-8"), (sys.argv[1], int(sys.argv[2])))
     def datagramReceived(self, datagram, address):
         print(f"Datagram {repr(datagram)} received from {repr(address)}")
-with mouse.Listener(on_scroll=MulticastInputs.on_scroll)
 reactor.listenMulticast(int(sys.argv[2]), MulticastInputs(), listenMultiple=True)
+with mouse.Listener(on_scroll=MulticastInputs.on_scroll) as mListener:
+    mListener.join()
 reactor.run()
