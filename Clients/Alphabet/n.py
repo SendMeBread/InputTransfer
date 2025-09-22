@@ -1,5 +1,5 @@
 import sys
-import keyboard
+from pynput import keyboard
 from twisted.internet import reactor
 from twisted.internet.protocol import DatagramProtocol
 class MulticastPingClient(DatagramProtocol):
