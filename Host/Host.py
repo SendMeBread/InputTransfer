@@ -1,16 +1,25 @@
+import asyncio
 import subprocess
 import multiprocessing
 import os
 import time
 from pynput import keyboard, mouse
-def on_keyDown(key):
-    if key not in inputList:
-        inputList.append(key)
-def on_move(x, y):
+async def check_key(array, elem):
+    if elem in array:
+        array.remove(elem)
+    else:
+        array.append(elem)
+async def bg_timer(duration, key_elem):
+    await(asyncio.sleep(duration))
+    await(check_key(inputList, key_elem))
+async def on_keyDown(key):
+    keyDownCheck = asyncio.create_task(bg_timer(0.05, key))
+    await keyDownCheck
+async def on_move(x, y):
     if "cursorX" not in inputList and "cursorY" not in inputList:
         inputList.append("cursorX")
         inputList.append("cursorY")
-def on_click(x, y, button, pressed):
+async def on_click(x, y, button, pressed):
     if button == button.left:
         if "left" not in inputList:
             inputList.append("left")
@@ -20,7 +29,7 @@ def on_click(x, y, button, pressed):
     elif button == button.middle:
         if "middle" not in inputList:
             inputList.append("middle")
-def on_scroll(x, y, dx, dy):
+async def on_scroll(x, y, dx, dy):
     if "scroll" not in inputList:
         inputList.append("scroll")
 address = input("Enter multicast server IP address:\n")
@@ -38,6 +47,7 @@ with keyboard.Listener(on_press=on_keyDown) as kListener:
     kListener.join()
 time.sleep(20)
 if __name__ == "__main__":
+    asyncio.run()
     file_names = inputList
     
     with multiprocessing.Pool() as pool:
