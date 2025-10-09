@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/josephmbest/InputTransfer",
-      "program": "/home/josephmbest/InputTransfer/build/Debug/outDebug",
+      "cwd": "/home/josephmbest/InputTransfer/src/main/host/unix",
+      "program": "/home/josephmbest/InputTransfer/src/main/host/unix/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

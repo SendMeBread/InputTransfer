@@ -108,7 +108,8 @@
     "streambuf": "cpp",
     "text_encoding": "cpp",
     "typeinfo": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "cinttypes": "cpp"
   },
   "java.dependency.syncWithFolderExplorer": false,
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
