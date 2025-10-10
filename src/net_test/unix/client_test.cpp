@@ -9,13 +9,13 @@
 #include <vector>
 
 int main() {
-    std::cout << "Please input your desired port" << std::endl;
+    std::cout << "Please input your desired port:" << std::endl;
     int port;
     std::cin >> port;
 
     std::cin.ignore();
 
-    std::cout << "Please input your desired ip" << std::endl;
+    std::cout << "Please input your desired ip:" << std::endl;
     std::string ip_str;
     std::cin >> ip_str;
     std::vector<char> ip(ip_str.begin(), ip_str.end());
@@ -45,17 +45,20 @@ int main() {
         return 1;
     };
     while (true) {
-        std::cout << "Please input your desired message" << std::endl;
+        std::cout << "Please input your desired message:" << std::endl;
         std::string message;
         std::getline(std::cin, message);
-
+        if (message == "" || message == "quit" || message == "exit") {
+            std::cout << "Exiting..." << std::endl;
+            break;
+        }
         if (send(sockfd, message.c_str(), message.length(), 0) < 0) {
             std::cerr << "sendto error" << std::endl;
             close(sockfd);
             return 1;
+        } else {
+            std::cout << "Sent message: " << message << std::endl;
         }
-
-        std::cout << "Sent message: " << message << std::endl;
     }
 
     close(sockfd);

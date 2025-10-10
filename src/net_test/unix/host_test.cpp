@@ -9,21 +9,30 @@
 #include <thread>
 void print_message(int client_sock) {
     std::vector<char> buf(1024);
-    ssize_t recv_mssg = recv(client_sock, buf.data(), buf.size(), 0);
-
-    std::cout << "Message" << std::endl;
-    std::cout.write(buf.data(), recv_mssg) <<std::endl;
-
+    while (true) {
+        ssize_t recv_mssg = recv(client_sock, buf.data(), buf.size(), 0);
+        if (recv_mssg < 0) {
+            std::cerr << "recvfrom error" << std::endl;
+            break;
+        } else if (recv_mssg == 0) {
+            std::cout << "A client disconnected..." << std::endl;
+            break;
+        } else {
+            std::cout << "Received message: " << std::endl;
+            std::cout.write(buf.data(), recv_mssg) <<std::endl;
+        }
+    }
     close(client_sock);
+    return;
 }
 int main() {
-    std::cout << "Please input your desired port" << std::endl;
+    std::cout << "Please input your desired port:" << std::endl;
     int port;
     std::cin >> port;
 
     std::cin.ignore();
 
-    std::cout << "Please input your desired ip" << std::endl;
+    std::cout << "Please input your desired ip:" << std::endl;
     std::string ip;
     std::cin >> ip;
 
@@ -60,17 +69,9 @@ int main() {
 
     while (true) {
         int sock_c = accept(sockfd, (struct sockaddr*)&c_address, &c_address_size);
-
-        if (sock_c == 0) {
-            std::cout << "Connection closed by peer..." << std::endl;
-            break;
-        } else if (sock_c < 0){
-            perror("failed recv");
-            break;
-        }
-
         std::thread c_handler(print_message, sock_c);
         c_handler.detach();
     }
+    close(sockfd);
     return 0;
 }
