@@ -109,7 +109,11 @@
     "text_encoding": "cpp",
     "typeinfo": "cpp",
     "variant": "cpp",
-    "cinttypes": "cpp"
+    "cinttypes": "cpp",
+    "ratio": "cpp",
+    "semaphore": "cpp",
+    "stop_token": "cpp",
+    "thread": "cpp"
   },
   "java.dependency.syncWithFolderExplorer": false,
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [

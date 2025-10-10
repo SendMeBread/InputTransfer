@@ -6,6 +6,16 @@
 #include <iostream>
 #include <unistd.h>
 #include <vector>
+#include <thread>
+void print_message(int client_sock) {
+    std::vector<char> buf(1024);
+    ssize_t recv_mssg = recv(client_sock, buf.data(), buf.size(), 0);
+
+    std::cout << "Message" << std::endl;
+    std::cout.write(buf.data(), recv_mssg) <<std::endl;
+
+    close(client_sock);
+}
 int main() {
     std::cout << "Please input your desired port" << std::endl;
     int port;
@@ -45,24 +55,22 @@ int main() {
     socklen_t c_address_size = sizeof(c_address);
 
     bind(sockfd, (struct sockaddr*)&address, sizeof(address));  
-    listen(sockfd, 20);
+    listen(sockfd, -1);
 
-    int sock_c = accept(sockfd, (struct sockaddr*)&c_address, &c_address_size);
 
     while (true) {
-        ssize_t bytes_received = recv(sock_c, buffer.data(), buffer.size(), 0);
+        int sock_c = accept(sockfd, (struct sockaddr*)&c_address, &c_address_size);
 
-        if (bytes_received > 0) {
-            std::cout << "Message: " << std::endl;
-            std::cout.write(buffer.data(), bytes_received) << std::endl;
-        } else if (bytes_received == 0) {
+        if (sock_c == 0) {
             std::cout << "Connection closed by peer..." << std::endl;
             break;
-        } else {
+        } else if (sock_c < 0){
             perror("failed recv");
             break;
-        }   
+        }
+
+        std::thread c_handler(print_message, sock_c);
+        c_handler.detach();
     }
-    close(sock_c);
     return 0;
 }

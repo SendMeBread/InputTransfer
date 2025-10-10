@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iostream>
 #include <unistd.h>
+#include <thread>
+#include <vector>
 
 int main() {
     std::cout << "Please input your desired port" << std::endl;
@@ -16,7 +18,9 @@ int main() {
     std::cout << "Please input your desired ip" << std::endl;
     std::string ip_str;
     std::cin >> ip_str;
-    const char* ip = ip_str.c_str();
+    std::vector<char> ip(ip_str.begin(), ip_str.end());
+    ip.push_back('\0');
+    char* ip_arr = ip.data();
 
     std::cin.ignore();
 
@@ -26,7 +30,7 @@ int main() {
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
-    inet_pton(AF_INET, ip, &(address.sin_addr));
+    inet_pton(AF_INET, ip_arr, &(address.sin_addr));
     
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
