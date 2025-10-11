@@ -49,7 +49,6 @@ int main() {
             std::cerr << "Socket error..." << std::endl;
             closesocket(host_sock);
             host_sock = INVALID_SOCKET;
-            continue;
         }
         break;
     }

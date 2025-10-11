@@ -20,7 +20,7 @@ void print_message(SOCKET c_sock, int ir) {
             std::cout.write(buf.data(), recv_mssg) <<std::endl;
         }
     }
-    ir = shutdown(c_sock, SD_SEND);
+    shutdown(c_sock, SD_SEND);
     closesocket(c_sock);
     return;
 }
