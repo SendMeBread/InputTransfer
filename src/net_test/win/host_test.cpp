@@ -29,37 +29,62 @@ int main() {
     WSAData wsaData;
     int iresult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-    if (iresult != 0) {
+    if (iresult < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
     }
 
-    std::string port;
-    std::getline(std::cin, port);
+    int port;
+    std::string ip;
 
-    struct addrinfo *result = NULL, hints;
-    ZeroMemory(&hints, sizeof(hints));
+    std::cout << "Please input your desired port:" << std::endl;
+    std::cin >> port;
 
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_protocol = IPPROTO_TCP;
-    hints.ai_flags = AI_PASSIVE;
-
-    iresult = getaddrinfo(NULL, port.c_str(), &hints, &result);
+    std::cout << "Please input your desired ip:" << std::endl;
+    std::cin >> ip;
 
     SOCKET host_sock = INVALID_SOCKET;
-    host_sock = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    host_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (host_sock == INVALID_SOCKET) {
+        std::cerr << "Socket creation failed: " << WSAGetLastError() << std::endl;
+        WSACleanup();
+        return 1;
+    }
+    struct sockaddr_in service;
+    service.sin_family = AF_INET;
+    service.sin_addr.s_addr = INADDR_ANY;
+    service.sin_port = htons(port);
 
-    iresult = bind(host_sock, result->ai_addr, (int)result->ai_addrlen);
+    if (bind(host_sock, (SOCKADDR*)&service, sizeof(service)) == SOCKET_ERROR) {
+        std::cerr << "Binding failed: " << WSAGetLastError() << std::endl;
+        closesocket(host_sock);
+        WSACleanup();
+    }
 
-    freeaddrinfo(result);
+    if (listen(host_sock, SOMAXCONN) == SOCKET_ERROR) {
+        std::cerr << "Socket error: " << WSAGetLastError() << std::endl;
+        closesocket(host_sock);
+        WSACleanup;
+    };
 
-    iresult = listen(host_sock, SOMAXCONN);
 
+    sockaddr_in client_addr;
+    int client_addr_size = sizeof(client_addr);
+    SOCKET client_sock = INVALID_SOCKET;
     while (true) {
-        SOCKET client_sock = INVALID_SOCKET;
-        client_sock = accept(host_sock, NULL, NULL);
+        client_sock = accept(host_sock, (SOCKADDR*)&client_addr, &client_addr_size);
+        if (client_sock == INVALID_SOCKET) {
+            std::cerr << "Accept failed: " << WSAGetLastError() << std::endl;
+            closesocket(host_sock);
+            WSACleanup();
+            return 1;
+        }
         std::thread c_thread(print_message, client_sock, iresult);
         c_thread.detach();
     }
+
+    closesocket(host_sock);
+
     WSACleanup();
+
+    return 0;
 }
