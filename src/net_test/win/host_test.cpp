@@ -5,7 +5,7 @@
 #include <thread>
 #include <vector>
 
-void print_message(int c_sock, int ir) {
+void print_message(SOCKET c_sock, int ir) {
     std::vector<char> buf(1024);
     while (true) {
         ssize_t recv_mssg = recv(c_sock, buf.data(), buf.size(), 0);
