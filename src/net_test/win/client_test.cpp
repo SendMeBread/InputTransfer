@@ -9,7 +9,6 @@ int main() {
     int iresult = WSAStartup(MAKEWORD(2,2), &wsaData);
     if (iresult < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
-
     }
     std::string port;
     std::string ip;
@@ -34,6 +33,7 @@ int main() {
         WSACleanup();
         return 1;
     }
+
     SOCKET host_sock = INVALID_SOCKET;
     for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
         host_sock = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
@@ -50,6 +50,7 @@ int main() {
             closesocket(host_sock);
             host_sock = INVALID_SOCKET;
         }
+        
         break;
     }
 
