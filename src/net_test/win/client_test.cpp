@@ -28,6 +28,7 @@ int main() {
     hints.ai_protocol = IPPROTO_TCP;
 
     iresult = getaddrinfo(ip.c_str(), port.c_str(), &hints, &result);
+    
     if (iresult < 0) {
         std::cerr << "Connection failed..." << std::endl;
         WSACleanup();
