@@ -49,7 +49,7 @@ Options for cloning:
 Option 1 (Git Bash):
 
 ```powershell
-git clone https://github.com/SendMeBread/InputTransfer.git; if ($?) { cd InputTransfer }
+git clone https://github.com/SendMeBread/InputTransfer.git &&  cd InputTransfer
 md build; if ($?) { cd build } #mkdir can replace md.
 cmake ../src/win
 mingw32-make.exe
