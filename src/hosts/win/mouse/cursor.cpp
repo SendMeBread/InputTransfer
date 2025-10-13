@@ -1,12 +1,31 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iostream>
-#include <string>
+#include <unistd.h>
 #include <thread>
 #include <vector>
+#include <string>
 
-void print_message(SOCKET c_sock) {
-    std::vector<char> buf(1024);
+#include <windows.h>
+
+WSADATA wsaData;
+
+int port;
+std::string ip;
+
+std::vector<char> buf(1024);
+
+std::string coords;
+
+std::string sub1;
+std::string sub2;
+
+int x;
+int y;
+
+size_t delimiter;
+
+void move_cursor(SOCKET c_sock) {
     while (true) {
         ssize_t recv_mssg = recv(c_sock, buf.data(), buf.size(), 0);
         if (recv_mssg < 0) {
@@ -16,8 +35,18 @@ void print_message(SOCKET c_sock) {
             std::cout << "A client disconnected..." << std::endl;
             break;
         } else {
-            std::cout << "Received message: " << std::endl;
-            std::cout.write(buf.data(), recv_mssg) << std::endl;
+            coords = buf.data(), recv_mssg;
+            delimiter = coords.find(',');
+
+            if (delimiter != std::string::npos) {
+                sub1 = coords.substr(0, delimiter);
+                sub2 = coords.substr(delimiter + 1);
+
+                x = std::stoi(sub1);
+                y = std::stoi(sub2);
+
+                SetCursorPos(x, y);
+            }
         }
     }
     shutdown(c_sock, SD_SEND);
@@ -26,15 +55,11 @@ void print_message(SOCKET c_sock) {
 }
 
 int main() {
-    WSAData wsaData;
     int iresult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 
     if (iresult < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
     }
-
-    int port;
-    std::string ip;
 
     std::cout << "Please input your desired port:" << std::endl;
     std::cin >> port;
@@ -49,6 +74,7 @@ int main() {
         WSACleanup();
         return 1;
     }
+
     struct sockaddr_in service;
     service.sin_family = AF_INET;
     service.sin_addr.s_addr = INADDR_ANY;
@@ -66,10 +92,10 @@ int main() {
         WSACleanup;
     }
 
-
     sockaddr_in client_addr;
     int client_addr_size = sizeof(client_addr);
     SOCKET client_sock = INVALID_SOCKET;
+
     while (true) {
         client_sock = accept(host_sock, (SOCKADDR*)&client_addr, &client_addr_size);
         if (client_sock == INVALID_SOCKET) {
@@ -78,10 +104,9 @@ int main() {
             WSACleanup();
             return 1;
         }
-        std::thread c_thread(print_message, client_sock);
+        std::thread c_thread(move_cursor, client_sock);
         c_thread.detach();
     }
-
     closesocket(host_sock);
 
     WSACleanup();

@@ -62,6 +62,7 @@ int main() {
         WSACleanup();
         return 1;
     }
+
     while (true) {
         std::cout << "Please input your desired message:" << std::endl;
         std::getline(std::cin, message);
