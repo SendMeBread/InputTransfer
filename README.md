@@ -76,7 +76,7 @@ Open the Command Prompt (cmd.exe)
 Enter the following commands:
 
 ```powershell
-cd InputTransfer
+cd Documents/Github/InputTransfer
 md build; if ($?) { cd build } #mkdir can replace md.
 cmake ../src/win
 mingw32-make.exe
