@@ -61,13 +61,9 @@ Option 2 (Github Desktop):
 
 Click on "File" (top left corner):
 
-<img width="296" height="330" alt="Step1" src="https://github.com/user-attachments/assets/20dae241-99a2-4fe7-9c56-3323d3676168" />
-
 Next, click on "Clone repository..."
 
-On the input screen, type as shown in the image:
-
-<img width="739" height="429" alt="Step 3" src="https://github.com/user-attachments/assets/76046c34-9215-447d-9958-1ca9ee226934" />
+On the input screen, type "<https://github.com/SendMeBread/InputTransfer.git>"
 
 Click "Clone."
 
@@ -76,7 +72,7 @@ Open the Command Prompt (cmd.exe)
 Enter the following commands:
 
 ```powershell
-cd Documents/Github/InputTransfer
+cd OneDrive/Documents/GitHub/InputTransfer
 md build; if ($?) { cd build } #mkdir can replace md.
 cmake ../src/win
 mingw32-make.exe
