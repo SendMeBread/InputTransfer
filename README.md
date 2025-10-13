@@ -44,10 +44,12 @@ Download and install CMake: <https://cmake.org/download/>
 
 Building:
 
+Options for cloning:
+
 Option 1 (Git Bash):
 
 ```powershell
-git clone https://github.com/SendMeBread/InputTransfer.git; if ($?) { cd build }
+git clone https://github.com/SendMeBread/InputTransfer.git; if ($?) { cd InputTransfer }
 md build; if ($?) { cd build } #mkdir can replace md.
 cmake ../src/win
 mingw32-make.exe
@@ -57,7 +59,28 @@ mingw32-make.exe
 
 Option 2 (Github Desktop):
 
----
+Click on "File" (top left corner):
+
+<img width="296" height="330" alt="Step1" src="https://github.com/user-attachments/assets/20dae241-99a2-4fe7-9c56-3323d3676168" />
+
+Next, click on "Clone repository..."
+
+On the input screen, type as shown in the image:
+
+<img width="739" height="429" alt="Step 3" src="https://github.com/user-attachments/assets/76046c34-9215-447d-9958-1ca9ee226934" />
+
+Click "Clone."
+
+Open the Command Prompt (cmd.exe)
+
+Enter the following commands:
+
+```powershell
+cd InputTransfer
+md build; if ($?) { cd build } #mkdir can replace md.
+cmake ../src/win
+mingw32-make.exe
+```
 
 ### Steps for Debian/Debian based systems
 
