@@ -6,9 +6,23 @@
 
 ### Making
 
-For Windows:
+### Steps for Windows
 
-Install a C++ Compiler (minGW-w64 recommended)
+Install Git (Desktop or Bash).
+
+To install Git Bash:
+
+Download the correct binary for YOUR operating system and run it: <https://github.com/git-for-windows/git/releases/tag/v2.51.0.windows.2>
+
+---
+
+To install Github Desktop:
+
+Download and install: <https://desktop.github.com/download/>
+
+---
+
+Install a C++ compiler (minGW-w64 recommended).
 
 To install minGW-w64:
 
@@ -20,22 +34,69 @@ Install minGW-w64 inside the MSYS2 environment:
 pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain
 ```
 
-To add C:/msys64/mingw64/bin to PATH:
+To add C:/msys64/mingw64/bin to PATH (Required):
 
 Press Windows + R (this will open the Run Prompt), then type sysdm, the press enter. Open the "Advanced" tab and click "Environment Variables."
 
-Install CMake: <https://cmake.org/download/>
-
 ---
 
-For Debian/Debian based systems:
+Download and install CMake: <https://cmake.org/download/>
 
-Dependencies include:
+Building:
 
-```bash
+Option 1 (Git Bash):
 
+```powershell
+git clone https://github.com/SendMeBread/InputTransfer.git; if ($?) { cd build }
+md build; if ($?) { cd build } #mkdir can replace md.
+cmake ../src/win
+mingw32-make.exe
 ```
 
 ---
 
-### WIP
+Option 2 (Github Desktop):
+
+---
+
+### Steps for Debian/Debian based systems
+
+Install dependencies:
+
+```bash
+sudo snap install cmake #DO NOT USE APT!
+
+sudo apt update && sudo apt install git build-essential libx11-dev -y
+```
+
+Building:
+
+```bash
+git clone https://github.com/SendMeBread/InputTransfer.git && cd InputTransfer
+mkdir build && cd build
+cmake ../src/linux
+make
+```
+
+---
+
+### Steps for Arch Linux/Arch based systems
+
+Install dependencies:
+
+```bash
+sudo pacman -Syu && sudo pacman -S git gcc libx11 cmake
+```
+
+Building:
+
+```bash
+git clone https://github.com/SendMeBread/InputTransfer.git && cd InputTransfer
+mkdir build && cd build
+cmake ../src/linux
+make
+```
+
+---
+
+### ***WIP***
