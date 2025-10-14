@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 4.1.2)
+cmake_minimum_required(VERSION 4.1.0)
 
-set(CMAKE_CXX_COMPILER "/msys64/mingw64/bin/g++")
-set(CMAKE_C_COMPILER "/msys64/mingw64/bin/gcc")
+set(CMAKE_CXX_COMPILER "/msys64/mingw64/bin/g++.exe")
+set(CMAKE_C_COMPILER "/msys64/mingw64/bin/gcc.exe")
 
 project(InputTransfer CXX)
 
