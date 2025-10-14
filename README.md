@@ -34,7 +34,7 @@ Install minGW-w64 inside the MSYS2 environment:
 pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain
 ```
 
-To add C:/msys64/mingw64/bin to PATH (Required):
+To add C:\msys64\mingw64\bin to PATH (Required):
 
 Press Windows + R (this will open the Run Prompt), then type sysdm, the press enter. Open the "Advanced" tab and click "Environment Variables."
 
@@ -72,8 +72,8 @@ Open the Command Prompt (cmd.exe)
 Enter the following commands:
 
 ```powershell
-cd OneDrive/Documents/GitHub/InputTransfer
-md build; if ($?) { cd build } #mkdir can replace md.
+cd OneDrive/Documents/GitHub/InputTransfer/
+mkdir build &&  cd build 
 cmake ../src/win
 mingw32-make.exe
 ```
