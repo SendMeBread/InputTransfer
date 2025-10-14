@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 4.1.2)
+
+set(CMAKE_CXX_COMPILER "/msys64/mingw64/bin/g++")
+set(CMAKE_C_COMPILER "/msys64/mingw64/bin/gcc")
+
 project(InputTransfer CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/net_test")

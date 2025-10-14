@@ -22,7 +22,7 @@ Download and install: <https://desktop.github.com/download/>
 
 ---
 
-Install a C++ compiler (minGW-w64 recommended).
+Install a C++ compiler (minGW-w64 recommended for this repository).
 
 To install minGW-w64:
 
