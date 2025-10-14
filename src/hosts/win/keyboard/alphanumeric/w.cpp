@@ -5,6 +5,7 @@
 #include <thread>
 #include <vector>
 #include <windows.h>
+
 void press_W() {
     INPUT inp;
 
@@ -63,15 +64,29 @@ int main(int argc, char* argv[]) {
     sockaddr_in client_addr;
     int client_addr_size = sizeof(client_addr);
     SOCKET client_sock = INVALID_SOCKET;
-    while (true) {
-        client_sock = accept(host_sock, (SOCKADDR*)&client_addr, &client_addr_size);
-        if (client_sock == INVALID_SOCKET) {
-            std::cerr << "Accept failed: " << WSAGetLastError() << std::endl;
-            closesocket(host_sock);
-            WSACleanup();
-            return 1;
-        } else {
-            press_W();
+
+    client_sock = accept(host_sock, (SOCKADDR*)&client_addr, &client_addr_size);
+    
+    if (client_sock == INVALID_SOCKET) {
+        std::cerr << "Accept failed: " << WSAGetLastError() << std::endl;
+        closesocket(host_sock);
+        WSACleanup();
+        return 1;
+    } else {
+        std::vector<char> buf(1024);
+        while (true) {
+            ssize_t recv_mssg = recv(client_sock, buf.data(), buf.size(), 0);
+            if (recv_mssg < 0) {
+                std::cerr << "recvfrom error" << std::endl;
+                break;
+            } else if (recv_mssg == 0) {
+                std::cout << "A client disconnected..." << std::endl;
+                break;
+            } else {
+                if ("W" == (recv_mssg, buf.data())) {
+                    press_W();
+                }
+            }
         }
     }
     closesocket(host_sock);
