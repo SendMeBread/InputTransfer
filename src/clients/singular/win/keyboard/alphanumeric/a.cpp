@@ -7,7 +7,7 @@
 #include <iostream>
 #include <chrono>
 
-std::string message;
+std::string message = "A";
 
 int main(int argc, char* argv[]) {
     WSADATA wsaData;
