@@ -54,18 +54,16 @@ void move_cursor(SOCKET c_sock) {
     return;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     int iresult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 
     if (iresult < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
     }
 
-    std::cout << "Please input your desired port:" << std::endl;
-    std::cin >> port;
-
-    std::cout << "Please input your desired ip:" << std::endl;
-    std::cin >> ip;
+    ip = argv[1];
+    std::string port_str = argv[2];
+    port = std::stoi(port_str);
 
     SOCKET host_sock = INVALID_SOCKET;
     host_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);

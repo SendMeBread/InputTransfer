@@ -18,6 +18,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/clients/singular/mouse")
 add_executable(client_cursor ../clients/singular/win/mouse/cursor.cpp)
 target_link_libraries(client_cursor ws2_32)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts")
+add_executable(host_master ../hosts/win/master.cpp)
+target_link_libraries(host_master shell32)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts/mouse")
 
 add_executable(host_cursor ../hosts/win/mouse/cursor.cpp)
