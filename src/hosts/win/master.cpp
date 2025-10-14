@@ -16,6 +16,9 @@ int main(int argc, char* argv[]) {
     std::string args_str = arg1 + " " + arg2;
 
     LPCSTR args = args_str.c_str();
+
+    std::string executables[1] = {"mouse\\host_cursor.exe"};
+
     sei.lpVerb = "open";
     sei.lpFile = "mouse\\host_cursor.exe";
     sei.lpParameters = args;
