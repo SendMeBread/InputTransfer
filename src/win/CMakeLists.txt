@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 4.1.0)
 set(CMAKE_CXX_COMPILER "/msys64/mingw64/bin/g++.exe")
 set(CMAKE_C_COMPILER "/msys64/mingw64/bin/gcc.exe")
 
-project(InputTransfer CXX)
+set(CMAKE_CXX_STANDARD 23)
+
+project(InputTransfer)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/net_test")
 add_executable(host_test ../net_test/win/host_test.cpp)
@@ -24,6 +26,9 @@ target_link_libraries(client_b ws2_32)
 
 add_executable(client_c ../clients/singular/win/keyboard/alphanumeric/c.cpp)
 target_link_libraries(client_c ws2_32)
+
+add_executable(client_d ../clients/singular/win/keyboard/alphanumeric/d.cpp)
+target_link_libraries(client_d ws2_32)
 
 add_executable(client_e ../clients/singular/win/keyboard/alphanumeric/e.cpp)
 target_link_libraries(client_e ws2_32)

@@ -27,9 +27,8 @@ void print_message(SOCKET c_sock) {
 
 int main() {
     WSAData wsaData;
-    int iresult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-    if (iresult < 0) {
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
     }
 
@@ -49,6 +48,7 @@ int main() {
         WSACleanup();
         return 1;
     }
+    
     struct sockaddr_in service;
     service.sin_family = AF_INET;
     service.sin_addr.s_addr = INADDR_ANY;
