@@ -11,9 +11,46 @@ size_t delimiter;
 
 std::vector<char> buf(1024);
 
-char keyList[] = {'\b', '\e', '\t', '\n', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', '<', '>', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', 'c', 'd', 's', 'v'};
+//Yes this list is sorted.
+char keyList[] = {'\b', '\e', '\t', '\n', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', '<', '>', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']'};
+int keyList_size = sizeof(keyList) / sizeof(keyList[0]); 
 
-void press_key(char mssg) {
+bool char_binary_search(char char_arr[], int arr_size, char target) {
+    int low = 0;
+    int high = arr_size - 1;
+
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+
+        if (char_arr[mid] == target) {
+            return true; // Found the specified char
+        } else if (char_arr[mid] < target) {
+            low = mid + 1;
+        } else { // Could also be defined as "arr[mid] > target"
+            high = mid - 1;
+        }
+    }
+    return false;
+}
+
+BOOL WINAPI break_handler(DWORD fdwCtrlType) {
+    switch (fdwCtrlType) {
+        case CTRL_C_EVENT:
+            return TRUE;
+        case CTRL_BREAK_EVENT:
+            return TRUE;
+        case CTRL_CLOSE_EVENT:
+            return TRUE;
+        case CTRL_LOGOFF_EVENT:
+            return TRUE;
+        case CTRL_SHUTDOWN_EVENT:
+            return TRUE;
+        default:
+            return FALSE;
+    }
+}
+
+void press_char_key(char mssg) {
     INPUT inp;
 
     inp.type = INPUT_KEYBOARD;
@@ -38,29 +75,29 @@ bool press_functional_key(char mssg) {
     inp.ki.dwExtraInfo = 0;
 
     switch (mssg) {
-    case 'c':
-        inp.ki.wVk = VK_CAPITAL;
-        break;
-    case 'd':
-        inp.ki.wVk = VK_DELETE;
-        break;
-    case 'v':
-        inp.ki.wVk = VK_DOWN;
-        break;
-    case '<':
-        inp.ki.wVk = VK_LEFT;
-        break;
-    case '>':
-        inp.ki.wVk = VK_RIGHT;
-        break;
-    case '^':
-        inp.ki.wVk = VK_UP;
-        break;
-    case 's':
-        inp.ki.wVk = VK_SHIFT;
-        break;
-    default:
-        return false;
+        case 'c':
+            inp.ki.wVk = VK_CAPITAL;
+            break;
+        case 'd':
+            inp.ki.wVk = VK_DELETE;
+            break;
+        case 'v':
+            inp.ki.wVk = VK_DOWN;
+            break;
+        case '<':
+            inp.ki.wVk = VK_LEFT;
+            break;
+        case '>':
+            inp.ki.wVk = VK_RIGHT;
+            break;
+        case '^':
+            inp.ki.wVk = VK_UP;
+            break;
+        case 's':
+            inp.ki.wVk = VK_SHIFT;
+            break;
+        default:
+            return false;
     }
 
     inp.ki.dwFlags = 0;
@@ -86,19 +123,13 @@ void client_handler(SOCKET c_sock){
         ssize_t recv_mssg = recv(c_sock, buf.data(), buf.size(), 0);
         std::string mssg_str = (recv_mssg, buf.data());
         char mssg_char = mssg_str[0];
-        for (char key : keyList) {
-            if (key == mssg_char) {
-                press_key(key);
-                break;
-            } else if (mssg_str.contains(",") && mssg_str.length() > 1) {
-                move_cursor(mssg_str);
-                break;
-            } else {
-                if (press_functional_key(key) == false) {
-                    std::cerr << "No matching key detected... " << std::endl;
-                    std::cout << key << std::endl;
-                }
-                break;
+        if (char_binary_search(keyList, keyList_size, mssg_char)) {
+            press_char_key(mssg_char);
+        } else if (mssg_str.contains(",") && mssg_str.length() > 1) {
+            move_cursor(mssg_str);
+        } else {
+            if (press_functional_key(mssg_char) == false) {      //"key" will not work here because of the first condition.
+                std::cerr << "No matching key detected... " << std::endl;
             }
         }
     } while (c_sock > 0);

@@ -8,10 +8,12 @@
 #include <chrono>
 
 std::string message = "E";
+const char* mssg = message.c_str();
 
 int main(int argc, char* argv[]) {
     WSADATA wsaData;
     int iresult = WSAStartup(MAKEWORD(2,2), &wsaData);
+
     if (iresult < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
     }
@@ -64,7 +66,6 @@ int main(int argc, char* argv[]) {
 
     while (true) {
         if (GetAsyncKeyState('E') & 0x8000) {
-            const char* mssg = message.c_str();
             if (send(host_sock, mssg, (int)strlen(mssg), 0) == SOCKET_ERROR) {
                 std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
                 closesocket(host_sock);
