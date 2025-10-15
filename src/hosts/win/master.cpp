@@ -11,7 +11,7 @@ size_t delimiter;
 
 std::vector<char> buf(1024);
 
-char keyList[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', 'd', 'l', 's'};
+char keyList[] = {'\b', '\e', '\t', '\n', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', 'c', 'd', 'l', 'r', 's'};
 
 void press_key(char mssg) {
     INPUT inp;
@@ -82,6 +82,16 @@ void client_handler(SOCKET c_sock){
             } else if (mssg_str.contains(",") && mssg_str.length() > 1) {
                 move_cursor(mssg_str);
                 break;
+            } else {
+                if (key == 'd') {
+                    press_del();
+                    break;
+                } else if (key == 's') {
+                    press_shift();
+                    break;
+                } else {
+                    continue;
+                }
             }
         }
     } while (c_sock > 0);

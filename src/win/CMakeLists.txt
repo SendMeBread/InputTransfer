@@ -4,46 +4,39 @@ set(CMAKE_CXX_COMPILER "/msys64/mingw64/bin/g++.exe")
 set(CMAKE_C_COMPILER "/msys64/mingw64/bin/gcc.exe")
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-project(InputTransfer)
+project(InputTransfer CXX)
+
+link_libraries(ws2_32)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/net_test")
 add_executable(host_test ../net_test/win/host_test.cpp)
-target_link_libraries(host_test ws2_32)
 add_executable(client_test ../net_test/win/client_test.cpp)
-target_link_libraries(client_test ws2_32)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/clients/singular/mouse")
 add_executable(client_cursor ../clients/singular/win/mouse/cursor.cpp)
-target_link_libraries(client_cursor ws2_32)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/clients/singular/keyboard/alphanumeric")
 add_executable(client_a ../clients/singular/win/keyboard/alphanumeric/a.cpp)
-target_link_libraries(client_a ws2_32)
-
 add_executable(client_b ../clients/singular/win/keyboard/alphanumeric/b.cpp)
-target_link_libraries(client_b ws2_32)
-
 add_executable(client_c ../clients/singular/win/keyboard/alphanumeric/c.cpp)
-target_link_libraries(client_c ws2_32)
-
 add_executable(client_d ../clients/singular/win/keyboard/alphanumeric/d.cpp)
-target_link_libraries(client_d ws2_32)
-
 add_executable(client_e ../clients/singular/win/keyboard/alphanumeric/e.cpp)
-target_link_libraries(client_e ws2_32)
 
 add_executable(client_w ../clients/singular/win/keyboard/alphanumeric/w.cpp)
-target_link_libraries(client_w ws2_32)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/clients/singular/keyboard/functional")
+add_executable(client_delete ../clients/singular/win/keyboard/functional/delete.cpp)
+add_executable(client_shift ../clients/singular/win/keyboard/functional/shift.cpp)
+add_executable(client_left ../clients/singular/win/keyboard/functional/left.cpp)
+add_executable(client_right ../clients/singular/win/keyboard/functional/right.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts")
 add_executable(host_master ../hosts/win/master.cpp)
-target_link_libraries(host_master ws2_32)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts/mouse")
-add_executable(host_cursor ../hosts/win/mouse/cursor.cpp)
-target_link_libraries(host_cursor ws2_32)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts/singular/mouse")
+add_executable(host_cursor ../hosts/win/singular/mouse/cursor.cpp)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts/keyboard/alphanumeric")
-add_executable(host_w ../hosts/win/keyboard/alphanumeric/w.cpp)
-target_link_libraries(host_w ws2_32)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts/singular/keyboard/alphanumeric")
+add_executable(host_w ../hosts/win/singular/keyboard/alphanumeric/w.cpp)
