@@ -9,6 +9,58 @@
 int x, y;
 size_t delimiter;
 
+std::vector<char> buf(1024);
+
+char keyList[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', 'd', 'l', 's'};
+
+void press_key(char mssg) {
+    INPUT inp;
+
+    inp.type = INPUT_KEYBOARD;
+    inp.ki.wScan = 0;
+    inp.ki.time = 0;
+    inp.ki.dwExtraInfo = 0;
+
+    inp.ki.wVk = VkKeyScan(mssg);
+    inp.ki.dwFlags = 0;
+    SendInput(1, &inp, sizeof(INPUT));
+
+    inp.ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(1, &inp, sizeof(INPUT));
+}
+
+void press_del() {
+    INPUT inp;
+
+    inp.type = INPUT_KEYBOARD;
+    inp.ki.wScan = 0;
+    inp.ki.time = 0;
+    inp.ki.dwExtraInfo = 0;
+
+    inp.ki.wVk = VK_DELETE;
+    inp.ki.dwFlags = 0;
+    SendInput(1, &inp, sizeof(INPUT));
+
+    inp.ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(1, &inp, sizeof(INPUT));
+}
+
+void press_shift() {
+    INPUT inp;
+
+    inp.type = INPUT_KEYBOARD;
+    inp.ki.wScan = 0;
+    inp.ki.time = 0;
+    inp.ki.dwExtraInfo = 0;
+
+    inp.ki.wVk = VK_SHIFT;
+    inp.ki.dwFlags = 0;
+    SendInput(1, &inp, sizeof(INPUT));
+
+    inp.ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(1, &inp, sizeof(INPUT));
+}
+
 void move_cursor(std::string mssg) {
     delimiter = mssg.find(',');
     if (delimiter != std::string::npos) {
@@ -18,94 +70,21 @@ void move_cursor(std::string mssg) {
     }
 }
 
-void press_A(std::string mssg) {
-    if (mssg.contains("A")) {
-        INPUT inp;
-
-        inp.type = INPUT_KEYBOARD;
-        inp.ki.wScan = 0;
-        inp.ki.time = 0;
-        inp.ki.dwExtraInfo = 0;
-
-        inp.ki.wVk = VkKeyScan('A');
-        inp.ki.dwFlags = 0;
-        SendInput(1, &inp, sizeof(INPUT));
-
-        inp.ki.dwFlags = KEYEVENTF_KEYUP;
-        SendInput(1, &inp, sizeof(INPUT));
-    }
-}
-
-void press_B(std::string mssg) {
-    if (mssg == "B") {
-        INPUT inp;
-
-        inp.type = INPUT_KEYBOARD;
-        inp.ki.wScan = 0;
-        inp.ki.time = 0;
-        inp.ki.dwExtraInfo = 0;
-
-        inp.ki.wVk = VkKeyScan('B');
-        inp.ki.dwFlags = 0;
-        SendInput(1, &inp, sizeof(INPUT));
-
-        inp.ki.dwFlags = KEYEVENTF_KEYUP;
-        SendInput(1, &inp, sizeof(INPUT));
-    }
-}
-
-void press_C(std::string mssg) {
-    if (mssg == "C") {
-        INPUT inp;
-
-        inp.type = INPUT_KEYBOARD;
-        inp.ki.wScan = 0;
-        inp.ki.time = 0;
-        inp.ki.dwExtraInfo = 0;
-
-        inp.ki.wVk = VkKeyScan('C');
-        inp.ki.dwFlags = 0;
-        SendInput(1, &inp, sizeof(INPUT));
-
-        inp.ki.dwFlags = KEYEVENTF_KEYUP;
-        SendInput(1, &inp, sizeof(INPUT));
-    }
-}
-
-void press_D(std::string mssg) {
-    if (mssg == "D") {
-        INPUT inp;
-
-        inp.type = INPUT_KEYBOARD;
-        inp.ki.wScan = 0;
-        inp.ki.time = 0;
-        inp.ki.dwExtraInfo = 0;
-
-        inp.ki.wVk = VkKeyScan('D');
-        inp.ki.dwFlags = 0;
-        SendInput(1, &inp, sizeof(INPUT));
-
-        inp.ki.dwFlags = KEYEVENTF_KEYUP;
-        SendInput(1, &inp, sizeof(INPUT));
-    }
-}
-
-void press_E(std::string mssg) {
-    if (mssg == "E") {
-        INPUT inp;
-
-        inp.type = INPUT_KEYBOARD;
-        inp.ki.wScan = 0;
-        inp.ki.time = 0;
-        inp.ki.dwExtraInfo = 0;
-
-        inp.ki.wVk = VkKeyScan('E');
-        inp.ki.dwFlags = 0;
-        SendInput(1, &inp, sizeof(INPUT));
-
-        inp.ki.dwFlags = KEYEVENTF_KEYUP;
-        SendInput(1, &inp, sizeof(INPUT));
-    }
+void client_handler(SOCKET c_sock){
+    do {
+        ssize_t recv_mssg = recv(c_sock, buf.data(), buf.size(), 0);
+        std::string mssg_str = (recv_mssg, buf.data());
+        char mssg_char = mssg_str[0];
+        for (char key : keyList) {
+            if (key == mssg_char) {
+                press_key(key);
+                break;
+            } else if (mssg_str.contains(",") && mssg_str.length() > 1) {
+                move_cursor(mssg_str);
+                break;
+            }
+        }
+    } while (c_sock > 0);
 }
 
 int main(int argc, char* argv[]) {
@@ -147,45 +126,18 @@ int main(int argc, char* argv[]) {
     int client_addr_size = sizeof(client_addr);
 
     ssize_t recv_mssg;
-    std::vector<char> buf(1024);
-
-    SOCKET client_sock = INVALID_SOCKET;
 
     while (true) {
-        client_sock = accept(host_sock, (SOCKADDR*)&client_addr, &client_addr_size);
+        SOCKET client_sock = accept(host_sock, (SOCKADDR*)&client_addr, &client_addr_size);
         if (client_sock == INVALID_SOCKET) {
             std::cerr << "Accept failed: " << WSAGetLastError() << std::endl;
             closesocket(host_sock);
             WSACleanup();
             return 1;
         } else {
-            recv_mssg = recv(client_sock, buf.data(), buf.size(), 0);
-            if (recv_mssg < 0) {
-                std::cerr << "recvfrom error" << std::endl;
-                break;
-            } else if (recv_mssg == 0) {
-                std::cout << "A client disconnected..." << std::endl;
-                break;
-            } else {
-                std::string input = (recv_mssg, buf.data());
-                //Mouse threads
-                std::thread pointer_thread(move_cursor, input);
 
-                pointer_thread.detach();
-
-                //Alphanumeric threads
-                std::thread a_thread(press_A, input);
-                std::thread b_thread(press_B, input);
-                std::thread c_thread(press_C, input);
-                std::thread d_thread(press_D, input);
-                std::thread e_thread(press_E, input);
-
-                a_thread.detach();
-                b_thread.detach();
-                c_thread.detach();
-                d_thread.detach();
-                e_thread.detach();
-            }
+            std::thread client_thread(client_handler, client_sock);
+            client_thread.detach();
         }
     }
 }

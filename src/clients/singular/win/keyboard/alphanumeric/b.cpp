@@ -66,12 +66,13 @@ int main(int argc, char* argv[]) {
         if (GetAsyncKeyState('B') & 0x8000) {
             const char* mssg = message.c_str();
                 if (send(host_sock, mssg, (int)strlen(mssg), 0) == SOCKET_ERROR) {
-                std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
-                closesocket(host_sock);
-                WSACleanup();
-                return 1;
+                    std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
+                    closesocket(host_sock);
+                    WSACleanup();
+                    return 1;
             }
         }
+        Sleep(5);
     }
 
     if (shutdown(host_sock, SD_SEND) == SOCKET_ERROR) {
