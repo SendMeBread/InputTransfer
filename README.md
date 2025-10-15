@@ -2,9 +2,11 @@
 
 ## My irrational goal is to make it so that other computers (clients) can input on one computer (the host). Not just typing, but the cursor as well. *Every input will be included.*
 
+## *ONLY USE WITH PEOPLE YOU TRUST!*
+
 ---
 
-### Making
+## Making
 
 ### Steps for Windows
 
@@ -28,10 +30,10 @@ To install minGW-w64:
 
 Install MSYS2: <https://www.msys2.org/>
 
-Install minGW-w64 inside the MSYS2 environment:
+Install minGW-w64 inside the MSYS2 environment (and dependencies for this project):
 
 ```bash
-pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain
+pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-x86_64-ninja
 ```
 
 To add C:\msys64\mingw64\bin to PATH (Required):
@@ -40,8 +42,6 @@ Press Windows + R (this will open the Run Prompt), then type sysdm, the press en
 
 ---
 
-Download and install CMake: <https://cmake.org/download/>
-
 Building:
 
 Options for cloning:
@@ -49,10 +49,9 @@ Options for cloning:
 Option 1 (Git Bash):
 
 ```powershell
-git clone https://github.com/SendMeBread/InputTransfer.git && cd InputTransfer
-md build && cd build
-cmake ../src/win
-mingw32-make.exe
+git clone https://github.com/SendMeBread/InputTransfer.git
+cd InputTransfer
+.\install.bat #Assuming you are using Ninja
 ```
 
 ---
@@ -73,9 +72,7 @@ Enter the following commands:
 
 ```powershell
 cd OneDrive/Documents/GitHub/InputTransfer/
-md build && cd build 
-cmake ../src/win
-mingw32-make.exe
+.\install.bat #Assuming you are using Ninja
 ```
 
 ### Steps for Debian/Debian based systems
@@ -104,7 +101,7 @@ make
 Install dependencies:
 
 ```bash
-sudo pacman -Syu && sudo pacman -S git gcc libx11 cmake
+sudo pacman -Syu && sudo pacman -S git libx11 cmake base-devel
 ```
 
 Building:

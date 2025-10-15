@@ -16,14 +16,11 @@ std::string ip;
 int x;
 int y;
 
-int main() {
+int main(int argc, char* argv[]) {
     int iresult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-    std::cout << "Please input your desired port:" << std::endl;
-    std::getline(std::cin, port);
-
-    std::cout << "Please input your desired ip:" << std::endl;
-    std::getline(std::cin, ip);
+    std::string port = argv[2];
+    std::string ip = argv[1];
 
     struct addrinfo *result = NULL, *ptr = NULL, hints;
     ZeroMemory(&hints, sizeof(hints));

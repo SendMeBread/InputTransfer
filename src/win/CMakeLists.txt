@@ -31,6 +31,8 @@ add_executable(client_delete ../clients/singular/win/keyboard/functional/delete.
 add_executable(client_shift ../clients/singular/win/keyboard/functional/shift.cpp)
 add_executable(client_left ../clients/singular/win/keyboard/functional/left.cpp)
 add_executable(client_right ../clients/singular/win/keyboard/functional/right.cpp)
+add_executable(client_up ../clients/singular/win/keyboard/functional/up.cpp)
+add_executable(client_down ../clients/singular/win/keyboard/functional/down.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts")
 add_executable(host_master ../hosts/win/master.cpp)

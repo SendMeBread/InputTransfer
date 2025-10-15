@@ -11,7 +11,7 @@ size_t delimiter;
 
 std::vector<char> buf(1024);
 
-char keyList[] = {'\b', '\e', '\t', '\n', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', 'c', 'd', 'l', 'r', 's'};
+char keyList[] = {'\b', '\e', '\t', '\n', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', '<', '>', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', 'c', 'd', 's', 'v'};
 
 void press_key(char mssg) {
     INPUT inp;
@@ -29,7 +29,7 @@ void press_key(char mssg) {
     SendInput(1, &inp, sizeof(INPUT));
 }
 
-void press_del() {
+bool press_functional_key(char mssg) {
     INPUT inp;
 
     inp.type = INPUT_KEYBOARD;
@@ -37,28 +37,39 @@ void press_del() {
     inp.ki.time = 0;
     inp.ki.dwExtraInfo = 0;
 
-    inp.ki.wVk = VK_DELETE;
+    switch (mssg) {
+    case 'c':
+        inp.ki.wVk = VK_CAPITAL;
+        break;
+    case 'd':
+        inp.ki.wVk = VK_DELETE;
+        break;
+    case 'v':
+        inp.ki.wVk = VK_DOWN;
+        break;
+    case '<':
+        inp.ki.wVk = VK_LEFT;
+        break;
+    case '>':
+        inp.ki.wVk = VK_RIGHT;
+        break;
+    case '^':
+        inp.ki.wVk = VK_UP;
+        break;
+    case 's':
+        inp.ki.wVk = VK_SHIFT;
+        break;
+    default:
+        return false;
+    }
+
     inp.ki.dwFlags = 0;
     SendInput(1, &inp, sizeof(INPUT));
 
     inp.ki.dwFlags = KEYEVENTF_KEYUP;
     SendInput(1, &inp, sizeof(INPUT));
-}
 
-void press_shift() {
-    INPUT inp;
-
-    inp.type = INPUT_KEYBOARD;
-    inp.ki.wScan = 0;
-    inp.ki.time = 0;
-    inp.ki.dwExtraInfo = 0;
-
-    inp.ki.wVk = VK_SHIFT;
-    inp.ki.dwFlags = 0;
-    SendInput(1, &inp, sizeof(INPUT));
-
-    inp.ki.dwFlags = KEYEVENTF_KEYUP;
-    SendInput(1, &inp, sizeof(INPUT));
+    return true;
 }
 
 void move_cursor(std::string mssg) {
@@ -83,15 +94,11 @@ void client_handler(SOCKET c_sock){
                 move_cursor(mssg_str);
                 break;
             } else {
-                if (key == 'd') {
-                    press_del();
-                    break;
-                } else if (key == 's') {
-                    press_shift();
-                    break;
-                } else {
-                    continue;
+                if (press_functional_key(key) == false) {
+                    std::cerr << "No matching key detected... " << std::endl;
+                    std::cout << key << std::endl;
                 }
+                break;
             }
         }
     } while (c_sock > 0);
@@ -145,9 +152,9 @@ int main(int argc, char* argv[]) {
             WSACleanup();
             return 1;
         } else {
-
             std::thread client_thread(client_handler, client_sock);
             client_thread.detach();
         }
     }
+    return 0;
 }
