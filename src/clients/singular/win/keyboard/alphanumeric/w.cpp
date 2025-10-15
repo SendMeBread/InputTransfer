@@ -72,6 +72,7 @@ int main(int argc, char* argv[]) {
                 return 1;
             }
         }
+        Sleep(5);
     }
 
     if (shutdown(host_sock, SD_SEND) == SOCKET_ERROR) {
