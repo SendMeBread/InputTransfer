@@ -68,10 +68,9 @@ int main(int argc, char* argv[]) {
 
     while (true) {
         if (GetCursorPos(&pt)) {
-            usleep(50000);
+            usleep(500);
             std::string message = std::to_string(pt.x) + "," + std::to_string(pt.y);
             const char *mssg = message.c_str();
-
             if (send(host_sock, mssg, (int)strlen(mssg), 0) == SOCKET_ERROR) {
                 std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
                 closesocket(host_sock);
