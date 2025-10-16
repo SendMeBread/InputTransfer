@@ -49,112 +49,107 @@ bool char_binary_search(char *char_arr, char target) {
     return false;
 }
 
-BOOL WINAPI break_handler(DWORD fdwCtrlType) {
-    switch (fdwCtrlType) {
-        case CTRL_C_EVENT:
-            return TRUE;
-        case CTRL_BREAK_EVENT:
-            return TRUE;
-        case CTRL_CLOSE_EVENT:
-            return TRUE;
-        case CTRL_LOGOFF_EVENT:
-            return TRUE;
-        case CTRL_SHUTDOWN_EVENT:
-            return TRUE;
-        default:
-            return FALSE;
+struct simulated_inputs {
+    void press_char_key(char key) {
+        INPUT inp[2];
+
+        inp[0].type, inp[1].type = INPUT_KEYBOARD;
+        inp[0].ki.wScan, inp[1].ki.wScan = 0;
+        inp[0].ki.time, inp[1].ki.wScan = 0;
+        inp[0].ki.dwExtraInfo, inp[1].ki.dwExtraInfo = 0;
+
+        inp[0].ki.wVk, inp[1].ki.wVk = VkKeyScan(key);
+        inp[0].ki.dwFlags, inp[1].ki.dwFlags = 0, KEYEVENTF_KEYUP;
+
+        SendInput(2, inp, sizeof(INPUT));
     }
-}
 
-void press_char_key(char mssg) {
-    INPUT inp;
+    void press_functional_key(char key) {
+        INPUT inp[2];
 
-    inp.type = INPUT_KEYBOARD;
-    inp.ki.wScan = 0;
-    inp.ki.time = 0;
-    inp.ki.dwExtraInfo = 0;
+        inp[0].type, inp[1].type = INPUT_KEYBOARD;
+        inp[0].ki.wScan, inp[1].ki.wScan = 0;
+        inp[0].ki.time, inp[1].ki.time = 0;
+        inp[0].ki.dwExtraInfo, inp[1].ki.dwExtraInfo = 0;
 
-    inp.ki.wVk = VkKeyScan(mssg);
-    inp.ki.dwFlags = 0;
-    SendInput(1, &inp, sizeof(INPUT));
+        for (const auto& key_pair : keyMap) {
+            if (key == key_pair.second) {
+                inp[0].ki.wVk, inp[1].ki.wVk = key_pair.first;
+            }
+        }
 
-    inp.ki.dwFlags = KEYEVENTF_KEYUP;
-    SendInput(1, &inp, sizeof(INPUT));
-}
+        inp[0].ki.dwFlags = 0;
+        inp[1].ki.dwFlags = KEYEVENTF_KEYUP;
+        SendInput(2, inp, sizeof(INPUT));
+    }
 
-void press_functional_key(char mssg) {
-    INPUT inp[2];
-
-    inp[0].type, inp[1].type = INPUT_KEYBOARD;
-    inp[0].ki.wScan, inp[1].ki.wScan = 0;
-    inp[0].ki.time, inp[1].ki.time = 0;
-    inp[0].ki.dwExtraInfo, inp[1].ki.dwExtraInfo = 0;
-
-    for (const auto& key_pair : keyMap) {
-        if (mssg == key_pair.second) {
-            inp[0].ki.wVk, inp[2].ki.wVk = key_pair.first;
+    void move_cursor(std::string coords) {
+        delimiter = coords.find(',');
+        if (delimiter != std::string::npos) {
+            x = std::stoi(coords.substr(0, delimiter));
+            y = std::stoi(coords.substr(delimiter + 1));
+            SetCursorPos(x, y);
         }
     }
 
-    inp[0].ki.dwFlags = 0;
-    inp[1].ki.dwFlags = KEYEVENTF_KEYUP;
-    SendInput(2, inp, sizeof(INPUT));
-}
-
-void move_cursor(std::string coords) {
-    delimiter = coords.find(',');
-    if (delimiter != std::string::npos) {
-        x = std::stoi(coords.substr(0, delimiter));
-        y = std::stoi(coords.substr(delimiter + 1));
-        SetCursorPos(x, y);
-    }
-}
-
-bool sim_scroll_wheel(std::string factor, char definer) {
-    try {
-        factor.erase(std::remove(factor.begin(), factor.end(), definer), factor.end());
-        mouse_event(MOUSEEVENTF_WHEEL, 0, 0, WHEEL_DELTA * std::stoi(factor), 0);
-        return true;
-    } catch (const std::invalid_argument&) {
-        return false;
-    } catch (const std::out_of_range&) {
-        return false;
-    }
-}
-
-void click_mouse_button(char button) {
-    INPUT Linp[2];
-    INPUT Rinp[2];
-    INPUT Minp[2];
-
-    Linp[0].type, Linp[1].type, Rinp[0].type, Rinp[1].type, Minp[0].type, Minp[1].type = INPUT_MOUSE;
-    Linp[0].mi.dwFlags, Linp[1].mi.dwFlags, Rinp[0].mi.dwFlags, Rinp[1].mi.dwFlags, Minp[0].mi.dwFlags, Minp[1].mi.dwFlags = MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP, MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP;
-
-    switch (button) {
-        case 'l':
-            SendInput(2, Linp, sizeof(INPUT));
-        case 'r':
-            SendInput(2, Rinp, sizeof(INPUT));
-        case 'm':
-            SendInput(2, Minp, sizeof(INPUT));
-    }
-}
-
-void client_handler(SOCKET c_sock){
-    do {
-        ssize_t recv_mssg = recv(c_sock, buf.data(), buf.size(), 0);
-        std::string mssg_str = (recv_mssg, buf.data());
-        char mssg_char = mssg_str[0];
-        if (char_binary_search(keyCharList, mssg_char)) {
-            press_char_key(mssg_char);
-        } else if (mssg_str.contains(",") && mssg_str.length() > 1) {
-            move_cursor(mssg_str);
-        } else if (mssg_str.contains("mb") && mssg_str.length() > 2) {
-            click_mouse_button(mssg_str[2]);
-        } else if (!sim_scroll_wheel(mssg_str, mssg_char)) {
-            press_functional_key(mssg_char);
+    void sim_scroll_wheel(std::string factor, char definer) {
+        try {
+            factor.erase(std::remove(factor.begin(), factor.end(), definer), factor.end());
+            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, WHEEL_DELTA * std::stoi(factor), 0);
+        } catch (const std::invalid_argument&) {
+            ;
+        } catch (const std::out_of_range&) {
+            ;
         }
-    } while (c_sock > 0);
+    }
+
+    void click_mouse_button(char button) {
+        INPUT Linp[2];
+        INPUT Rinp[2];
+        INPUT Minp[2];
+
+        Linp[0].type, Linp[1].type, Rinp[0].type, Rinp[1].type, Minp[0].type, Minp[1].type = INPUT_MOUSE;
+        Linp[0].mi.dwFlags, Linp[1].mi.dwFlags, Rinp[0].mi.dwFlags, Rinp[1].mi.dwFlags, Minp[0].mi.dwFlags, Minp[1].mi.dwFlags = MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP, MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP;
+
+        switch (button) {
+            case 'l':
+                SendInput(2, Linp, sizeof(INPUT));
+            case 'r':
+                SendInput(2, Rinp, sizeof(INPUT));
+            case 'm':
+                SendInput(2, Minp, sizeof(INPUT));
+        }
+    }
+};
+
+simulated_inputs sim;
+
+ssize_t mssg;
+std::string mssg_str;
+char mssg_char;
+
+void client_handler(SOCKET csock) {
+    mssg = recv(csock, buf.data(), buf.size(), 0);
+    mssg_str = (mssg, buf.data());
+    mssg_char = mssg_str[0];
+
+    while (true) {
+        if (!char_binary_search(keyCharList, mssg_char)) {
+            if (mssg_str.length() > 2) {
+                if (mssg_str.contains(",")) {
+                    sim.move_cursor(mssg_str);
+                } else if (mssg_str.contains("mb")) {
+                    sim.click_mouse_button(mssg_str[2]);
+                }
+            } else if (mssg_char == '|') {
+                sim.sim_scroll_wheel(mssg_str, mssg_char);
+            } else {
+                sim.press_functional_key(mssg_char);
+            }
+        } else {
+            sim.press_char_key(mssg_char);
+        }
+    }
 }
 
 int main() {
@@ -204,8 +199,6 @@ int main() {
     sockaddr_in client_addr;
     int client_addr_size = sizeof(client_addr);
 
-    ssize_t recv_mssg;
-
     while (true) {
         SOCKET client_sock = accept(host_sock, (SOCKADDR*)&client_addr, &client_addr_size);
         if (client_sock == INVALID_SOCKET) {
@@ -214,9 +207,10 @@ int main() {
             WSACleanup();
             return 1;
         } else {
-            std::thread client_thread(client_handler, client_sock);
-            client_thread.detach();
+            std::thread client_sock_handler(client_handler, client_sock);
+            client_sock_handler.detach();          
         }
     }
+
     return 0;
 }
