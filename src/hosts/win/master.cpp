@@ -21,7 +21,7 @@ int find_char_arr_size(char *arr) {
     return sizeof(arr) / sizeof(arr[0]);
 }
 
-std::map<int, char> def_keyCodeMap(int codes[], char keys[]) {
+std::map<int, char> def_keyCodeMap(int *codes, char *keys) {
     std::map<int, char> map;
     for ( int i = 0; i < find_char_arr_size(keys); i++ ) {
         map[codes[i]] = keys[i]; 
@@ -31,7 +31,7 @@ std::map<int, char> def_keyCodeMap(int codes[], char keys[]) {
 
 std::map<int, char> keyMap = def_keyCodeMap(VkList, keyFuncList);
 
-bool char_binary_search(char char_arr[], char target) {
+bool char_binary_search(char *char_arr, char target) {
     int low = 0;
     int high = find_char_arr_size(char_arr) - 1;
 
