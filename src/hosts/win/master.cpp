@@ -4,6 +4,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <map>
 #include <windows.h>
 
 int x, y;
@@ -11,12 +12,28 @@ size_t delimiter;
 
 std::vector<char> buf(1024);
 
-char keyList[] = {'\b', '\t', '\n', '\e', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']'};
-int keyList_size = sizeof(keyList) / sizeof(keyList[0]); 
+char keyCharList[] = { '\'', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', '=', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '`' };
 
-bool char_binary_search(char char_arr[], int arr_size, char target) {
+char keyFuncList[] = { '\b', '\t', '\n', '\e', ' ', '<', '>', '^', 'a', 'c', 'd', 'i', 's', 'v', 'w', 'x' };
+int VkList[] = { VK_BACK, VK_TAB, VK_RETURN, VK_SPACE, VK_ESCAPE, VK_LEFT, VK_RIGHT, VK_UP, VK_MENU, VK_CAPITAL, VK_DELETE, VK_INSERT, VK_SHIFT, VK_DOWN, VK_LWIN, VK_CONTROL };
+
+int find_char_arr_size(char *arr) {
+    return sizeof(arr) / sizeof(arr[0]);
+}
+
+std::map<int, char> def_keyCodeMap(int codes[], char keys[]) {
+    std::map<int, char> map;
+    for ( int i = 0; i < find_char_arr_size(keys); i++ ) {
+        map[codes[i]] = keys[i]; 
+    }
+    return map;
+}
+
+std::map<int, char> keyMap = def_keyCodeMap(VkList, keyFuncList);
+
+bool char_binary_search(char char_arr[], char target) {
     int low = 0;
-    int high = arr_size - 1;
+    int high = find_char_arr_size(char_arr) - 1;
 
     while (low <= high) {
         int mid = low + (high - low) / 2;
@@ -25,7 +42,7 @@ bool char_binary_search(char char_arr[], int arr_size, char target) {
             return true;
         } else if (char_arr[mid] < target) {
             low = mid + 1;
-        } else { // Could also be defined as "arr[mid] > target"
+        } else {
             high = mid - 1;
         }
     }
@@ -73,30 +90,10 @@ bool press_functional_key(char mssg) {
     inp.ki.time = 0;
     inp.ki.dwExtraInfo = 0;
 
-    switch (mssg) {
-        case 'c':
-            inp.ki.wVk = VK_CAPITAL;
-            break;
-        case 'd':
-            inp.ki.wVk = VK_DELETE;
-            break;
-        case 'v':
-            inp.ki.wVk = VK_DOWN;
-            break;
-        case '<':
-            inp.ki.wVk = VK_LEFT;
-            break;
-        case '>':
-            inp.ki.wVk = VK_RIGHT;
-            break;
-        case '^':
-            inp.ki.wVk = VK_UP;
-            break;
-        case 's':
-            inp.ki.wVk = VK_SHIFT;
-            break;
-        default:
-            return false;
+    for (const auto& key_pair : keyMap) {
+        if (mssg == key_pair.second) {
+            inp.ki.wVk = key_pair.first;
+        }
     }
 
     inp.ki.dwFlags = 0;
@@ -122,7 +119,7 @@ void client_handler(SOCKET c_sock){
         ssize_t recv_mssg = recv(c_sock, buf.data(), buf.size(), 0);
         std::string mssg_str = (recv_mssg, buf.data());
         char mssg_char = mssg_str[0];
-        if (char_binary_search(keyList, keyList_size, mssg_char)) {
+        if (char_binary_search(keyCharList, mssg_char)) {
             press_char_key(mssg_char);
         } else if (mssg_str.contains(",") && mssg_str.length() > 1) {
             move_cursor(mssg_str);
@@ -132,7 +129,7 @@ void client_handler(SOCKET c_sock){
     } while (c_sock > 0);
 }
 
-int main(int argc, char* argv[]) {
+int main() {
     WSAData wsaData;
 
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) < 0) {
@@ -140,8 +137,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int port = std::stoi(argv[2]);
-    std::string ip = argv[1];
+    std::string ip;
+    int port;
+
+    std::cout << "Please input your desired ip:" << std::endl;
+    std::cin >> ip;
+
+    std::cout << "Please input your desired port:" << std::endl;
+    std::cin >> port;
 
     SOCKET host_sock = INVALID_SOCKET;
     host_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
