@@ -11,8 +11,7 @@ size_t delimiter;
 
 std::vector<char> buf(1024);
 
-//Yes this list is sorted.
-char keyList[] = {'\b', '\e', '\t', '\n', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']'};
+char keyList[] = {'\b', '\t', '\n', '\e', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ';', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']'};
 int keyList_size = sizeof(keyList) / sizeof(keyList[0]); 
 
 bool char_binary_search(char char_arr[], int arr_size, char target) {
@@ -23,7 +22,7 @@ bool char_binary_search(char char_arr[], int arr_size, char target) {
         int mid = low + (high - low) / 2;
 
         if (char_arr[mid] == target) {
-            return true; // Found the specified char
+            return true;
         } else if (char_arr[mid] < target) {
             low = mid + 1;
         } else { // Could also be defined as "arr[mid] > target"
@@ -127,10 +126,8 @@ void client_handler(SOCKET c_sock){
             press_char_key(mssg_char);
         } else if (mssg_str.contains(",") && mssg_str.length() > 1) {
             move_cursor(mssg_str);
-        } else {
-            if (press_functional_key(mssg_char) == false) {      //"key" will not work here because of the first condition.
-                std::cerr << "No matching key detected... " << std::endl;
-            }
+        } else if (press_functional_key(mssg_char) == false) {
+            std::cerr << "No matching key detected... " << std::endl;
         }
     } while (c_sock > 0);
 }
@@ -140,6 +137,7 @@ int main(int argc, char* argv[]) {
 
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
+        return 1;
     }
 
     int port = std::stoi(argv[2]);
@@ -162,12 +160,14 @@ int main(int argc, char* argv[]) {
         std::cerr << "Binding failed: " << WSAGetLastError() << std::endl;
         closesocket(host_sock);
         WSACleanup();
+        return 1;
     }
 
     if (listen(host_sock, SOMAXCONN) == SOCKET_ERROR) {
         std::cerr << "Socket error: " << WSAGetLastError() << std::endl;
         closesocket(host_sock);
         WSACleanup;
+        return 1;
     }
 
     sockaddr_in client_addr;
