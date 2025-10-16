@@ -1,7 +1,9 @@
 #!/bin/bash
+set +x
 
-rm -rf build
-
+if [ [ -d "build"] ]; then
+    rm -rf build
+fi
 mkdir build
 cd build
 

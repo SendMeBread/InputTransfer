@@ -1,5 +1,5 @@
-rmdir /s /q build
-
+@echo off
+IF exist build rmdir /s /q build
 mkdir build
 cd build
 
