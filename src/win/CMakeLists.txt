@@ -6,7 +6,7 @@ set(CMAKE_C_COMPILER "/msys64/mingw64/bin/gcc.exe")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-project(InputTransfer CXX)
+project(InputTransfer)
 
 link_libraries(ws2_32)
 
@@ -27,6 +27,7 @@ add_executable(client_e ../clients/singular/win/keyboard/alphanumeric/e.cpp)
 add_executable(client_w ../clients/singular/win/keyboard/alphanumeric/w.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/clients/singular/keyboard/functional")
+add_executable(client_caps ../clients/singular/win/keyboard/functional/caps.cpp)
 add_executable(client_delete ../clients/singular/win/keyboard/functional/delete.cpp)
 add_executable(client_shift ../clients/singular/win/keyboard/functional/shift.cpp)
 add_executable(client_left ../clients/singular/win/keyboard/functional/left.cpp)

@@ -33,7 +33,7 @@ Install MSYS2: <https://www.msys2.org/>
 Install minGW-w64 inside the MSYS2 environment (and dependencies for this project):
 
 ```bash
-pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-x86_64-ninja
+pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-x86_64-cmake
 ```
 
 To add C:\msys64\mingw64\bin to PATH (Required):
@@ -42,9 +42,7 @@ Press Windows + R (this will open the Run Prompt), then type sysdm, the press en
 
 ---
 
-Building:
-
-Options for cloning:
+Building options:
 
 Option 1 (Git Bash):
 
@@ -115,4 +113,4 @@ make
 
 ---
 
-### ***WIP***
+### *WIP*
