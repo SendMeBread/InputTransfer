@@ -12,7 +12,7 @@ const char* mssg = message.c_str();
 
 int main(int argc, char* argv[]) {
     WSADATA wsaData;
-    if (WSAStartup(MAKEWORD(2,2), &wsaData)t < 0) {
+    if (WSAStartup(MAKEWORD(2,2), &wsaData) < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
     }
 
