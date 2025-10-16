@@ -10,14 +10,18 @@
 POINT pt;
 HWND hwnd;
 WSADATA wsaData;
+
 std::string port;
 std::string ip;
+
+std::string message;
+const char *mssg;
 
 int x;
 int y;
 
 int main(int argc, char* argv[]) {
-    int iresult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    WSAStartup(MAKEWORD(2, 2), &wsaData);
 
     std::string port = argv[2];
     std::string ip = argv[1];
@@ -29,9 +33,7 @@ int main(int argc, char* argv[]) {
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
 
-    iresult = getaddrinfo(ip.c_str(), port.c_str(), &hints, &result);
-
-    if (iresult < 0) {
+    if (getaddrinfo(ip.c_str(), port.c_str(), &hints, &result) < 0) {
         std::cerr << "Connection failed..." << std::endl;
         WSACleanup();
         return 1;
@@ -48,8 +50,7 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        iresult = connect(host_sock, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (iresult == SOCKET_ERROR) {
+        if (connect(host_sock, ptr->ai_addr, (int)ptr->ai_addrlen) == SOCKET_ERROR) {
             std::cerr << "Socket error..." << std::endl;
             closesocket(host_sock);
             host_sock = INVALID_SOCKET;
@@ -69,8 +70,8 @@ int main(int argc, char* argv[]) {
     while (true) {
         if (GetCursorPos(&pt)) {
             usleep(500);
-            std::string message = std::to_string(pt.x) + "," + std::to_string(pt.y);
-            const char *mssg = message.c_str();
+            message = std::to_string(pt.x) + "," + std::to_string(pt.y);
+            mssg = message.c_str();
             if (send(host_sock, mssg, (int)strlen(mssg), 0) == SOCKET_ERROR) {
                 std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
                 closesocket(host_sock);
@@ -79,4 +80,16 @@ int main(int argc, char* argv[]) {
             }
         }
     }
+    
+    if (shutdown(host_sock, SD_SEND) == SOCKET_ERROR) {
+        std::cerr << "Failed to close properly..." << std::endl;
+        closesocket(host_sock);
+        host_sock = INVALID_SOCKET;
+        return 1;
+    }
+
+    closesocket(host_sock);
+    WSACleanup();
+
+    return 0;
 }

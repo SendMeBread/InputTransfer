@@ -12,8 +12,7 @@ const char* mssg = message.c_str();
 
 int main(int argc, char* argv[]) {
     WSADATA wsaData;
-    int iresult = WSAStartup(MAKEWORD(2,2), &wsaData);
-    if (iresult < 0) {
+    if (WSAStartup(MAKEWORD(2,2), &wsaData)t < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
     }
 
@@ -26,10 +25,8 @@ int main(int argc, char* argv[]) {
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
-
-    iresult = getaddrinfo(ip.c_str(), port.c_str(), &hints, &result);
     
-    if (iresult < 0) {
+    if (getaddrinfo(ip.c_str(), port.c_str(), &hints, &result) < 0) {
         std::cerr << "Connection failed..." << std::endl;
         WSACleanup();
         return 1;
@@ -45,8 +42,7 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        iresult = connect(host_sock, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (iresult == SOCKET_ERROR) {
+        if (connect(host_sock, ptr->ai_addr, (int)ptr->ai_addrlen) == SOCKET_ERROR) {
             std::cerr << "Socket error..." << std::endl;
             closesocket(host_sock);
             host_sock = INVALID_SOCKET;

@@ -7,8 +7,6 @@
 
 #include <windows.h>
 
-WSADATA wsaData;
-
 int port;
 std::string ip;
 
@@ -54,9 +52,8 @@ void move_cursor(SOCKET c_sock) {
 }
 
 int main(int argc, char* argv[]) {
-    int iresult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-
-    if (iresult < 0) {
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) < 0) {
         std::cerr << "WSAStartup error..." << std::endl;
     }
 
