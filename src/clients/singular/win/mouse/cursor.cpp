@@ -7,6 +7,8 @@
 
 #include <windows.h>
 
+#include "sendMouseData.hpp"
+
 POINT pt;
 HWND hwnd;
 WSADATA wsaData;
@@ -67,17 +69,13 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    sendMouseData cursor(host_sock);
+    
     while (true) {
-        if (GetCursorPos(&pt)) {
-            usleep(500);
-            message = std::to_string(pt.x) + "," + std::to_string(pt.y);
-            mssg = message.c_str();
-            if (send(host_sock, mssg, (int)strlen(mssg), 0) == SOCKET_ERROR) {
-                std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
-                closesocket(host_sock);
-                WSACleanup();
-                return 1;
-            }
+        if (!cursor.sendCursor()) {
+            WSACleanup();
+            closesocket(host_sock);
+            return 1;
         }
     }
     

@@ -5,10 +5,8 @@
 #include <vector>
 #include <windows.h>
 #include <iostream>
-#include <chrono>
 
-std::string message = "A";
-const char* mssg = message.c_str();
+#include "../sendKey.hpp"
 
 int main(int argc, char* argv[]) {
     WSADATA wsaData;
@@ -63,14 +61,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    sendInput sendInp("A", host_sock, 0);
+
     while (true) {
-        if (GetAsyncKeyState('A') & 0x8000) {
-            if (send(host_sock, mssg, (int)strlen(mssg), 0) == SOCKET_ERROR) {
-                std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
-                closesocket(host_sock);
-                WSACleanup();
-                return 1;
-            }
+        if (!sendInp.sendChar()) {
+            std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
+            closesocket(host_sock);
+            WSACleanup();
+            return 1;
         }
         Sleep(5);
     }
