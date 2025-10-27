@@ -6,7 +6,7 @@
 #include <windows.h>
 #include <iostream>
 
-#include "../sendKey.hpp"
+#include "../../sendKeyWin.hpp"
 
 int main(int argc, char* argv[]) {
     WSADATA wsaData;

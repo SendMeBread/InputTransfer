@@ -20,15 +20,11 @@ class sendMouseData {
         bool sendCursor() {
             if (GetCursorPos(&pt)) {
                 message = (std::to_string(pt.x) + "," + std::to_string(pt.y)).c_str();
-                if (send(socket, message, (int)strlen(message), 0) < 1) {
-                    return false;
-                } else {
+                if (!send(socket, message, (int)strlen(message), 0) < 1) {
                     return true;
                 }
-            } else {
-                return false;
             }
-            Sleep(1);
+            return false;
         }
 };
 

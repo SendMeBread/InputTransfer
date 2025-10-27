@@ -29,8 +29,6 @@ add_executable(client_e ../clients/singular/win/keyboard/alphanumeric/e.cpp)
 
 add_executable(client_w ../clients/singular/win/keyboard/alphanumeric/w.cpp)
 
-target_link_libraries(client_a INTERFACE ../include/sendKey.hpp)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/clients/singular/keyboard/functional")
 add_executable(client_caps ../clients/singular/win/keyboard/functional/caps.cpp)
 add_executable(client_delete ../clients/singular/win/keyboard/functional/delete.cpp)

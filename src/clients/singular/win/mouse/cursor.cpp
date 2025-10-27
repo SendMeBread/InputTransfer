@@ -7,20 +7,12 @@
 
 #include <windows.h>
 
-#include "sendMouseData.hpp"
+#include "../sendMouseDataWin.hpp"
 
-POINT pt;
-HWND hwnd;
 WSADATA wsaData;
 
 std::string port;
 std::string ip;
-
-std::string message;
-const char *mssg;
-
-int x;
-int y;
 
 int main(int argc, char* argv[]) {
     WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -77,6 +69,7 @@ int main(int argc, char* argv[]) {
             closesocket(host_sock);
             return 1;
         }
+        usleep(500);
     }
     
     if (shutdown(host_sock, SD_SEND) == SOCKET_ERROR) {
