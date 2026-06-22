@@ -3,7 +3,7 @@ IF exist build rmdir /s /q build
 mkdir build
 cd build
 
-cmake -G Ninja ../src/win
+cmake -G Ninja -S ../src/win
 cmake --build .
 
 cd ../

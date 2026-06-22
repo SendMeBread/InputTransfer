@@ -33,12 +33,12 @@ Install MSYS2: <https://www.msys2.org/>
 Install minGW-w64 inside the MSYS2 environment (and dependencies for this project):
 
 ```bash
-pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-x86_64-cmake
+pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
 ```
 
 To add C:\msys64\mingw64\bin to PATH (Required):
 
-Press Windows + R (this will open the Run Prompt), then type sysdm, the press enter. Open the "Advanced" tab and click "Environment Variables."
+Press Windows + R (this will open the Run Prompt), then type "rundll32.exe sysdm.cpl,EditEnvironmentVariables", then press enter. Now add the given path to the Path Environment Variable by the "Path" variable, then clicking "Edit", and lastly clicking "New." Finally, add paste the path given above, and press "Enter." Then press OK, and you have added mingw64 to Path!
 
 ---
 

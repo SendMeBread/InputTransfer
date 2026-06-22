@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 4.1.0)
 
-set(CMAKE_CXX_COMPILER "/msys64/mingw64/bin/g++.exe")
-set(CMAKE_C_COMPILER "/msys64/mingw64/bin/gcc.exe")
+set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")
+set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
+
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
