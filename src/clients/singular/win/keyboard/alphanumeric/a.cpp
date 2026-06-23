@@ -5,8 +5,10 @@
 #include <vector>
 #include <windows.h>
 #include <iostream>
+#include <chrono>
 
-#include "../../sendKeyWin.hpp"
+std::string message = "A";
+const char* mssg = message.c_str();
 
 int main(int argc, char* argv[]) {
     WSADATA wsaData;
@@ -27,7 +29,7 @@ int main(int argc, char* argv[]) {
 
     iresult = getaddrinfo(ip.c_str(), port.c_str(), &hints, &result);
     
-    if (iresult < 0) {
+    if (iresult != 0) {
         std::cerr << "Connection failed..." << std::endl;
         WSACleanup();
         return 1;
@@ -44,13 +46,14 @@ int main(int argc, char* argv[]) {
         }
 
         iresult = connect(host_sock, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (iresult == SOCKET_ERROR) {
-            std::cerr << "Socket error..." << std::endl;
-            closesocket(host_sock);
-            host_sock = INVALID_SOCKET;
+        if (iresult != SOCKET_ERROR) {
+            break;
         }
         
-        break;
+        std::cerr << "Socket error..." << std::endl;
+        closesocket(host_sock);
+        host_sock = INVALID_SOCKET;
+        
     }
 
     freeaddrinfo(result);
@@ -61,14 +64,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    sendInput sendInp("A", host_sock, 0);
-
     while (true) {
-        if (!sendInp.sendChar()) {
-            std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
-            closesocket(host_sock);
-            WSACleanup();
-            return 1;
+        if (GetAsyncKeyState('A') & 0x8000) {
+            if (send(host_sock, mssg, (int)strlen(mssg), 0) == SOCKET_ERROR) {
+                std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
+                closesocket(host_sock);
+                WSACleanup();
+                return 1;
+            }
         }
         Sleep(5);
     }

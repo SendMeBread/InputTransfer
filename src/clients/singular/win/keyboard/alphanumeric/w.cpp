@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 
     iresult = getaddrinfo(ip.c_str(), port.c_str(), &hints, &result);
     
-    if (iresult < 0) {
+    if (iresult != 0) {
         std::cerr << "Connection failed..." << std::endl;
         WSACleanup();
         return 1;
@@ -46,13 +46,14 @@ int main(int argc, char* argv[]) {
         }
 
         iresult = connect(host_sock, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (iresult == SOCKET_ERROR) {
-            std::cerr << "Socket error..." << std::endl;
-            closesocket(host_sock);
-            host_sock = INVALID_SOCKET;
+        if (iresult != SOCKET_ERROR) {
+            break;
         }
         
-        break;
+        std::cerr << "Socket error..." << std::endl;
+        closesocket(host_sock);
+        host_sock = INVALID_SOCKET;
+        
     }
 
     freeaddrinfo(result);
