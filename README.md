@@ -14,7 +14,7 @@ Install Git (Desktop or Bash).
 
 To install Git Bash:
 
-Download the correct binary for YOUR operating system and run it: <https://github.com/git-for-windows/git/releases/tag/v2.51.0.windows.2>
+Download the correct binary for YOUR operating system and run it: <https://github.com/git-for-windows/git/releases>
 
 ---
 
