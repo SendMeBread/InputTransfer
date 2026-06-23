@@ -94,7 +94,7 @@ make
 
 ---
 
-### Steps for Arch Linux/Arch based systems
+### Steps for Arch based systems
 
 Install dependencies:
 
