@@ -65,4 +65,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts/singular/mouse")
 add_executable(host_cursor ../hosts/win/singular/mouse/cursor.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/hosts/singular/keyboard/alphanumeric")
+
+add_executable(host_a ../hosts/win/singular/keyboard/alphanumeric/a.cpp)
+add_executable(host_b ../hosts/win/singular/keyboard/alphanumeric/b.cpp)
+add_executable(host_c ../hosts/win/singular/keyboard/alphanumeric/c.cpp)
+add_executable(host_e ../hosts/win/singular/keyboard/alphanumeric/e.cpp)
+add_executable(host_f ../hosts/win/singular/keyboard/alphanumeric/f.cpp)
 add_executable(host_w ../hosts/win/singular/keyboard/alphanumeric/w.cpp)

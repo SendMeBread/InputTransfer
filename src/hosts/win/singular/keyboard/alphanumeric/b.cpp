@@ -6,7 +6,7 @@
 #include <vector>
 #include <windows.h>
 
-void press_W() {
+void press_B() {
     INPUT inp;
 
     inp.type = INPUT_KEYBOARD;
@@ -14,7 +14,7 @@ void press_W() {
     inp.ki.time = 0;
     inp.ki.dwExtraInfo = 0;
 
-    inp.ki.wVk = VkKeyScan('W');
+    inp.ki.wVk = VkKeyScan('B');
     inp.ki.dwFlags = 0;
     SendInput(1, &inp, sizeof(INPUT));
 
@@ -83,8 +83,8 @@ int main(int argc, char* argv[]) {
                 std::cout << "A client disconnected..." << std::endl;
                 break;
             } else {
-                if ("W" == (recv_mssg, buf.data())) {
-                    press_W();
+                if ("B" == (recv_mssg, buf.data())) {
+                    press_B();
                 }
             }
         }
