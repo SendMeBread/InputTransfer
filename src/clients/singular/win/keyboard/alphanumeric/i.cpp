@@ -7,7 +7,7 @@
 #include <iostream>
 #include <chrono>
 
-std::string message = "D";
+std::string message = "I";
 const char* mssg = message.c_str();
 
 int main(int argc, char* argv[]) {
@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
     }
 
     while (true) {
-        if (GetAsyncKeyState('D') & 0x8000) {
+        if (GetAsyncKeyState('I') & 0x8000) {
             if (send(host_sock, mssg, (int)strlen(mssg), 0) == SOCKET_ERROR) {
                 std::cerr << "Failed to send..." << WSAGetLastError() << std::endl;
                 closesocket(host_sock);
