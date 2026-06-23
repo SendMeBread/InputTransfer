@@ -73,7 +73,7 @@ cd OneDrive/Documents/GitHub/InputTransfer/
 .\install.bat #Assuming you are using Ninja
 ```
 
-### Steps for Debian/Debian based systems
+### Steps for Debian based systems
 
 Install dependencies:
 
