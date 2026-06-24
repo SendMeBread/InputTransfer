@@ -7,42 +7,45 @@
 
 #include <windows.h>
 
-int port;
-std::string ip;
-
-std::vector<char> buf(1024);
-
-std::string coords;
-
-std::string sub1;
-std::string sub2;
-
-int x;
-int y;
-
-size_t delimiter;
-
 void move_cursor(SOCKET c_sock) {
+    std::vector<char> buf(1024);
+    std::string stream_buffer = ""; // Accumulate data here
+
     while (true) {
-        ssize_t recv_mssg = recv(c_sock, buf.data(), buf.size(), 0);
+        int recv_mssg = recv(c_sock, buf.data(), static_cast<int>(buf.size()), 0);
         if (recv_mssg < 0) {
-            std::cerr << "recvfrom error" << std::endl;
+            std::cerr << "recv error: " << WSAGetLastError() << std::endl;
             break;
         } else if (recv_mssg == 0) {
             std::cout << "A client disconnected..." << std::endl;
             break;
-        } else {
-            coords = buf.data(), recv_mssg;
-            delimiter = coords.find(',');
+        }
 
+        // Append newly received data to our stream accumulator
+        stream_buffer.append(buf.data(), recv_mssg);
+
+        // Process packets assuming they end with a delimiter like '\n'
+        // Note: Ensure your client sends a '\n' at the end of every coordinate string!
+        size_t newline_pos;
+        while ((newline_pos = stream_buffer.find('\n')) != std::string::npos) {
+            std::string packet = stream_buffer.substr(0, newline_pos);
+            stream_buffer.erase(0, newline_pos + 1); // Remove processed packet
+
+            size_t delimiter = packet.find(',');
             if (delimiter != std::string::npos) {
-                sub1 = coords.substr(0, delimiter);
-                sub2 = coords.substr(delimiter + 1);
+                std::string sub1 = packet.substr(0, delimiter);
+                std::string sub2 = packet.substr(delimiter + 1);
 
-                x = std::stoi(sub1);
-                y = std::stoi(sub2);
-
-                SetCursorPos(x, y);
+                // Protect your code from throwing uncaught exceptions
+                try {
+                    int x = std::stoi(sub1);
+                    int y = std::stoi(sub2);
+                    SetCursorPos(x, y);
+                } catch (const std::invalid_argument& e) {
+                    std::cerr << "Invalid argument error (not a number): " << e.what() << " | Data received: " << packet << std::endl;
+                } catch (const std::out_of_range& e) {
+                    std::cerr << "Value out of integer range: " << e.what() << std::endl;
+                }
             }
         }
     }
@@ -57,9 +60,9 @@ int main(int argc, char* argv[]) {
         std::cerr << "WSAStartup error..." << std::endl;
     }
 
-    ip = argv[1];
+    std::string ip = argv[1];
     std::string port_str = argv[2];
-    port = std::stoi(port_str);
+    int port = std::stoi(port_str);
 
     SOCKET host_sock = INVALID_SOCKET;
     host_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -83,7 +86,7 @@ int main(int argc, char* argv[]) {
     if (listen(host_sock, SOMAXCONN) == SOCKET_ERROR) {
         std::cerr << "Socket error: " << WSAGetLastError() << std::endl;
         closesocket(host_sock);
-        WSACleanup;
+        WSACleanup();
     }
 
     sockaddr_in client_addr;

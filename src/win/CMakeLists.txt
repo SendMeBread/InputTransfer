@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project(InputTransfer)
 
-link_libraries(ws2_32)
+link_libraries(Ws2_32)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/net_test")
 add_executable(host_test ../net_test/win/host_test.cpp)
