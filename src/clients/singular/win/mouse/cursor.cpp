@@ -7,7 +7,7 @@
 
 #include <windows.h>
 
-#include "../sendMouseDataWin.hpp"
+#include "../sendMouseData.hpp"
 
 WSADATA wsaData;
 
