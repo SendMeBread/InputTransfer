@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
         std::vector<char> buf(1024);
         while (true) {
             ssize_t recv_mssg = recv(client_sock, buf.data(), buf.size(), 0);
-            if (recv_mssg != 0) {
+            if (recv_mssg == -1) {
                 std::cerr << "recvfrom error" << std::endl;
                 break;
             } else if (recv_mssg == 0) {
@@ -89,6 +89,7 @@ int main(int argc, char* argv[]) {
             }
         }
     }
+    closesocket(client_sock);
     closesocket(host_sock);
     WSACleanup();
 
