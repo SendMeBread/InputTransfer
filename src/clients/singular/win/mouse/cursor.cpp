@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    sendMouseData cursor(host_sock);
+   sendMouseData cursor(host_sock);
     
     while (true) {
         if (!cursor.sendCursor()) {
